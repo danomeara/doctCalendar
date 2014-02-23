@@ -1,0 +1,78 @@
+import datetime
+import re
+import calendar
+import sys
+
+
+def main():
+    #open file for output
+    sys.stdout = open("/home/dan/webDevelopment/calendar/index.html", 'w')
+    #Monday is index 0; calendar defaults to Monday being the first day of the
+    #week but this can be changed using calendar.setfirstweekday(index_integer)
+
+    firstday = '0'
+    year = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+            'August', 'September', 'November', 'December']
+
+    #splitting up the current date
+    today = datetime.datetime.date(datetime.datetime.now())
+    current = re.split('-', str(today))
+    current_no = int(current[1])
+    current_month = year[current_no - 1]
+    current_day = int(re.sub('\A0', '', current[2]))
+    current_year = int(current[0])
+
+    print '''
+
+     <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" >
+     <HTML>
+     <head>
+	<link rel="stylesheet" type="text/css" href="flexbox.css">
+     <title>
+     '''
+
+    print '%s %s </title>' % (current_month, current_year)
+
+    print '''</head>
+		<body>
+		<ul class="navigation">
+		  <li><a href="#">Home</a></li>
+		  <li><a href="#">New record</a></li>
+  		  <li><a href="#">Events</a></li>
+		  <li><a href="#">Family</a></li>
+		</ul>'''
+
+    print '<h1> %s %s </h1 >' % (current_month, current_year)
+
+    print '<ul class="flex-container">'
+
+    month = calendar.monthcalendar(current_year, current_no)
+    nweeks = len(month)
+
+    for w in range(0, nweeks):
+        week = month[w]
+        for x in xrange(0, 7):
+            day = week[x]
+            if x == 5 or x == 6:
+                idtype = 'weekend'
+            if day == 0:
+                idtype = 'previous'
+                print '<li class="flex-item" id=%s></li>' % (idtype)
+            elif day == current_day:
+		idtype = 'today'
+                print '''<li class="flex-item" id="%s">%s</li>''' % (idtype, day)
+            else:
+		idtype = 'normalday'
+                print '<li class="flex-item" id="%s">%s</li>' % (idtype, day)
+
+    print '</ul>'        
+
+    print ''' </tbody>
+        </table>
+        </div>
+        </body>
+        </html>'''
+
+if __name__ == "__main__":
+    main()
+
